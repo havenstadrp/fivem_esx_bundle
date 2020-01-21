@@ -4,16 +4,17 @@
 ARG FIVEM_NUM=2001
 ARG FIVEM_VER=2001-80265bbee0cf4b7d1a408832f8ba7dc4f294b554
 ARG DATA_VER=2bde7889b4593d842e911827a33294211f40de93
+ARG TXADMIN_VER=6a442efdafa61dc26610c6d04b45f91f5ce24c24
 
 FROM spritsail/alpine:3.10 as builder
 
 ARG FIVEM_VER
 ARG DATA_VER
+ARG TXADMIN_VER
 
 WORKDIR /output
 
-RUN apk update && apk upgrade \
- && wget -O- http://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/${FIVEM_VER}/fx.tar.xz \
+RUN wget -O- http://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/${FIVEM_VER}/fx.tar.xz \
         | tar xJ --strip-components=1 \
             --exclude alpine/dev --exclude alpine/proc \
             --exclude alpine/run --exclude alpine/sys \
@@ -23,10 +24,10 @@ RUN apk update && apk upgrade \
     \
  && apk add nodejs npm \
  && apk -p $PWD add curl jq tini nodejs npm \
- && apk add git \
- && git clone -n https://github.com/tabarra/txAdmin.git \
+ && mkdir -p /output/txAdmin \
+ && wget -O- http://github.com/tabarra/txAdmin/archive/${TXADMIN_VER}.tar.gz \
+        | tar xz --strip-components=1 -C txAdmin \
  && cd txAdmin \
- && git checkout 6a442efdafa61dc26610c6d04b45f91f5ce24c24 \
  && npm i && cd .. \
  && mkdir fivem_run
 

@@ -33,7 +33,7 @@ else
 fi
 
 if ! getent passwd "${HOST_UID}" | cut -d: -f1 | read; then 
-	adduser fivem -D -G "$HOST_GROUPNAME"
+	adduser -u "${HOST_UID}" fivem -D -G "$HOST_GROUPNAME"
 	HOST_USERNAME="fivem"
 else
 	HOST_USERNAME=`getent passwd "${HOST_UID}" | cut -d: -f1`
